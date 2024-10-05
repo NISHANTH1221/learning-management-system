@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Course{
+  id String @id @default(uuid())
+  name String @db.Text
+  description String? @db.Text
+  price Float?
+  userId String
+  isPublished Boolean @default(false)
+  imageURL String? @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  categoryId String?
+  category Category? @relation(fields: [categoryId],references: [id]) 
+  chapters Chapters[]
+}
+
+model Category{
+  id String @id @default(uuid())
+  name String @db.Text
+  courseId Course[]
+  
+  @@index([name])
+}
+
+model Chapters{
+  id String @id @default(uuid())
+  name String @db.Text
+  isDemo Boolean @default(false)
+  attachments Attachments[]
+  courseId String
+  course Course @relation(fields: [courseId],references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  videoLink String @db.Text
+
+  @@index([courseId])
+}
+
+model Attachments{
+  id String @id @default(uuid())
+  name String @db.Text
+  attachmentUrl String @db.Text
+  chapterId String
+  chapter Chapters @relation(fields: [chapterId],references: [id],onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([chapterId])
+}
