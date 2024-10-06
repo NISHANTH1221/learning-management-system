@@ -19,10 +19,8 @@ const SidebarPiece = (
     const router = useRouter();
     const isActive = (pathname==href) || (pathname=="/" && href == "/") || (pathname?.startsWith(`${href}/`))
     
-    const onClick= () => {
-        if (!isActive){
-            router.push(href)
-        }
+    const onClick= () => { 
+       router.push(href)
     }
     return (
         <div onClick={onClick} className={
