@@ -3,6 +3,7 @@ import prisma from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { LayoutDashboard } from "lucide-react";
 import { redirect } from "next/navigation";
+import TitleCard from "../../_components/title";
 const CourseCard = async ({ params } : {params:{courseId : string}}) => {
 
     const { userId } = auth();
@@ -47,6 +48,9 @@ const CourseCard = async ({ params } : {params:{courseId : string}}) => {
                     <div className="flex items-center gap-x-2">
                         <IconBadge icon={LayoutDashboard}/>
                         <h2 className="text-2xl">Customize your course</h2>
+                    </div>
+                    <div>
+                        <TitleCard />
                     </div>
                 </div>
             </div>
