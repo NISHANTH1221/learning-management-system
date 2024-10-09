@@ -50,7 +50,7 @@ const CourseCard = async ({ params } : {params:{courseId : string}}) => {
                         <h2 className="text-2xl">Customize your course</h2>
                     </div>
                     <div>
-                        <TitleCard />
+                        <TitleCard  initialData={{title:"web developement course"}} courseId={params.courseId}/>
                     </div>
                 </div>
             </div>
