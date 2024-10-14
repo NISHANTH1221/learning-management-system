@@ -1,8 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
-import { Form , FormControl , FormItem, FormField , FormDescription, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form , FormControl , FormItem, FormField , FormMessage } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import * as z from "zod"
 import { Button } from "@/components/ui/button";
@@ -11,23 +10,24 @@ import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-interface titleProps {
+import { Textarea } from "@/components/ui/textarea";
+interface descriptionProps {
     initialData :{
-        title : string ,
+        description : string,
     },
     courseId : string
 }
 
-const titleFormSchema = z.object({
-    title : z.string().min(4,"Title must be greater than 4 characters") 
+const descriptionFormSchema = z.object({
+    description : z.string().min(4,"Description must be greater than 4 characters") 
 })
 
-const TitleCard = ({initialData,courseId}:titleProps) => {
+const DescriptionCard = ({initialData,courseId}:descriptionProps) => {
     const router = useRouter();
     const [isEditing ,setIsEditing ] =useState<Boolean>(false);
     const { toast } = useToast();
-    const form = useForm<z.infer <typeof titleFormSchema>>({
-        resolver : zodResolver(titleFormSchema),
+    const form = useForm<z.infer <typeof descriptionFormSchema>>({
+        resolver : zodResolver(descriptionFormSchema),
         defaultValues:initialData
     });
 
@@ -37,13 +37,13 @@ const TitleCard = ({initialData,courseId}:titleProps) => {
         setIsEditing((current) =>!current)
     }
 
-    const onSubmit= async (values:z.infer<typeof titleFormSchema>) =>{
+    const onSubmit= async (values:z.infer<typeof descriptionFormSchema>) =>{
         console.log(values);
         try{
            const response =  await axios.patch(`/api/courses/${courseId}`,values);
            if(response.status==200){
             toast({
-                description:"Title Updated Successfully"
+                description:"Description Updated Successfully"
             })
             toggleEdit()
             router.refresh()
@@ -60,7 +60,7 @@ const TitleCard = ({initialData,courseId}:titleProps) => {
     return (
         <div className="bg-slate-300 mt-6 p-4 border rounded-md">
             <div className="flex items-center justify-between font-medium">
-                Title
+                Description
                 <Button onClick={toggleEdit} variant="ghost">
                     {
                         isEditing ? (
@@ -77,7 +77,7 @@ const TitleCard = ({initialData,courseId}:titleProps) => {
             </div> 
             {
                 !isEditing && (
-                    <p className="mt-4 text-md">{initialData.title}</p>
+                    <p className="mt-4 text-md">{initialData.description}</p>
                 )
             }
             {
@@ -89,12 +89,12 @@ const TitleCard = ({initialData,courseId}:titleProps) => {
                         >
                             <FormField 
                                 control = {form.control}
-                                name="title"
+                                name="description"
                                 render = {({field})=>(
                                     <FormItem>
                                         <FormControl>
-                                            <Input 
-                                            placeholder="e.g. 'web developement course'"
+                                            <Textarea 
+                                            placeholder="e.g. 'This course is from 1-100 not from 0-1'"
                                             disabled = {isSubmitting}
                                             {...field}
                                             />
@@ -120,4 +120,4 @@ const TitleCard = ({initialData,courseId}:titleProps) => {
 
 }
  
-export default TitleCard;
+export default DescriptionCard;

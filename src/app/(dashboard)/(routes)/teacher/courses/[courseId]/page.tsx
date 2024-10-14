@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server";
 import { LayoutDashboard } from "lucide-react";
 import { redirect } from "next/navigation";
 import TitleCard from "../../_components/title";
+import  DescriptionCard  from "../../_components/description-card";
+import CourseImageUpload from "../../_components/courseimageupload";
 const CourseCard = async ({ params } : {params:{courseId : string}}) => {
 
     const { userId } = auth();
@@ -22,7 +24,7 @@ const CourseCard = async ({ params } : {params:{courseId : string}}) => {
     }
 
     const requiredFeilds = [
-        course.name,
+        course.title,
         course.description,
         course.price,
         course.imageURL,
@@ -50,7 +52,9 @@ const CourseCard = async ({ params } : {params:{courseId : string}}) => {
                         <h2 className="text-2xl">Customize your course</h2>
                     </div>
                     <div>
-                        <TitleCard  initialData={{title:"web developement course"}} courseId={params.courseId}/>
+                        <TitleCard  initialData={{title:course.title}} courseId={params.courseId}/>
+                        <DescriptionCard initialData = {{description : course.description ?? ""}} courseId = {params.courseId}/>
+                        <CourseImageUpload initialData = {{imageURL : course.imageURL ?? ""}} courseId={params.courseId}/>
                     </div>
                 </div>
             </div>

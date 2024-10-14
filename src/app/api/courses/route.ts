@@ -12,7 +12,7 @@ export async function POST(req : NextRequest){
          
         const course = await prisma.course.create({
             data:{
-                name: title,
+                title,
                 userId
             }
         });
