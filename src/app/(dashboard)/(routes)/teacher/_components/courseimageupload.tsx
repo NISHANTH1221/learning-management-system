@@ -1,7 +1,5 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import * as z from "zod"
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
@@ -19,7 +17,7 @@ interface courseImageProps {
 }
 
 const imageURLschema = z.object({
-    imageURL : z.string().min(4,"URL must be greater than 4 characters") 
+    imageURL : z.string().min(1,"URL is needed") 
 })
 
 const CourseImageUpload = ({initialData,courseId}:courseImageProps) => {
@@ -37,12 +35,12 @@ const CourseImageUpload = ({initialData,courseId}:courseImageProps) => {
            const response =  await axios.patch(`/api/courses/${courseId}`,values);
            if(response.status==200){
             toast({
-                description:"Description Updated Successfully"
+                description:"Course Image added Successfully"
             })
             toggleEdit()
             router.refresh()
            }
-
+           
         }catch(error){
             toast({
                 title: "Error",
@@ -75,15 +73,23 @@ const CourseImageUpload = ({initialData,courseId}:courseImageProps) => {
                     }
                 </Button>
             </div>
+            <div>
             {
-                initialData.imageURL && !isEditing && <Image src={initialData.imageURL} alt="thumbnail" className="aspect-video object-fill"/>
+                initialData.imageURL && !isEditing &&
+                (
+                    <div className="relative aspect-video w-full">
+                        <Image src={initialData.imageURL} fill alt="thumbnail" className="aspect-video object-fill "/>
+                    </div>
+                )
             }
             {
                 initialData.imageURL && isEditing &&
                 <UploadCourseFile 
                     endPoint = "courseImage"
-                    onChange = {(url)=>{
-                    onSubmit({imageURL : url})
+                    onChange = {async(url)=>{
+                        if(url){    
+                          await onSubmit({imageURL : url})
+                        }
                     }}
                 />
             }
@@ -91,10 +97,10 @@ const CourseImageUpload = ({initialData,courseId}:courseImageProps) => {
                 !initialData.imageURL && isEditing &&
                 <UploadCourseFile 
                     endPoint = "courseImage"
-                    onChange = {(url)=>{
-                    onSubmit({imageURL : url})
+                    onChange = {async (url)=>{
+                     await onSubmit({imageURL : url})
                     }}
-                />
+                /> 
             }
             {
                 !initialData.imageURL && !isEditing &&
@@ -102,6 +108,9 @@ const CourseImageUpload = ({initialData,courseId}:courseImageProps) => {
                     <ImageIcon className="w-4 h-4"/>
                 </div>
             }
+
+            </div>
+            
         </div>
     );
 
